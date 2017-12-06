@@ -18,9 +18,9 @@ namespace DataExtractor
 
         static void Main(string[] args)
         {
-            // TestWithPasteHtml("SamTest01122017");
-           // createSenderProfile();
-            TestWithTemplate("SamTestTemplate05122017_5", true, true);
+            // TestWithPasteHtml("SamTest12012017");
+            // createSenderProfile();
+            TestWithTemplate("SamTestTemplate12052017_21", true, true);
             Console.WriteLine("Done");
             Console.ReadKey();
         }
@@ -130,13 +130,13 @@ namespace DataExtractor
 
         private static void Send(string externalKey)
         {
-            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "sameer.mohammad@xx.com");
-            triggeredEmail.FromAddress = "test@test.com";
+            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "sameer.mohammad@pimco.com");
+            triggeredEmail.FromAddress = "Sameer.mohammad@pimco.com";
             triggeredEmail.FromName = "Master Tester";
             triggeredEmail.AddReplacementValue("Subject", "SamTest CC and BCC")
                             .AddReplacementValue("Body", "<table><tr> <th>Company</th> <th>Contact</th> <th>Country</th> </tr> <tr> <td>Test Company</td> <td>Test Contact</td> <td>Us</td> </tr> <tr> <td>Test Company 2</td> <td>Test Contact 2</td> <td>Us</td> </tr> </table>")
                             .AddReplacementValue("Head", "<style>.red{color:red}</style>");
-                           
+
 
 
             var emailTrigger = new EmailTrigger(GetConfig());
@@ -150,8 +150,11 @@ namespace DataExtractor
             // Needs to get Loaded from Config File
             return new ExactTargetConfiguration
             {
+
+                ApiUserName = "webtech@pimco.com",   // Generic ApiUserName
+                ApiPassword = ObjAes.DecryptString("133171215054227028068033180158000111090232083231"),
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//  Proper End Point Required From SMS
-                //ClientID = ???     //  ClientID is Optional.
+               ClientId = 6191809
             };
         }
 
@@ -159,6 +162,8 @@ namespace DataExtractor
         //{
         //    SimpleAES ObjAes = new SimpleAES();
         //    SoapClient partnerApi = new SoapClient();
+        //    partnerApi.ClientCredentials.UserName.UserName = "webtech@pimco.com";
+        //    partnerApi.ClientCredentials.UserName.Password = ObjAes.DecryptString("133171215054227028068033180158000111090232083231");
         //    //Instantiate SenderProfile and set general properties
         //    SenderProfile sp = new SenderProfile();
         //    sp.FromAddress = "sameer.mohammad@pimco.com";

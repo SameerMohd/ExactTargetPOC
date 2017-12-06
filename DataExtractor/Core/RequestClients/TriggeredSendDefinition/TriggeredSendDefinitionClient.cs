@@ -53,9 +53,9 @@ namespace DataExtractor.Core.RequestClients.TriggeredSendDefinition
             };
 
             if (NeedCC)
-                ts.CCEmail = "sam232b@gmail.com;sameermd7474@gmail.com"; //"%%CCAddress%%";
-            if (NeedBcc)
-                ts.BccEmail = "sam232b@gmail.com";// "%%BCCAddress%%";
+                ts.CCEmail = "sam232b@gmail.com;kkmir09@gmail.com"; //"%%CCAddress%%"; //Multiple CCAddress
+            // if (NeedBcc)
+            //  ts.BccEmail = "kkmir09@gmail.com";// "%%BCCAddress%%";
 
             string requestId, status;
             var result = _client.Create(new CreateOptions(), new APIObject[] { ts }, out requestId, out status);
