@@ -175,22 +175,7 @@ namespace DataExtractor
         //    sp.UseDefaultRMMRules = false;
         //    sp.UseDefaultRMMRulesSpecified = true;
 
-        //    //create the Sender Profile
-        //    string requestID = string.Empty;
-        //    string status = string.Empty;
-        //    CreateResult[] results = partnerApi.Create(null, new APIObject[] { sp }, out requestID, out status);
-        //    //parse the results for objectID or error
-        //    if (status.ToUpper() == "OK")
-        //    {
-        //        Console.WriteLine("SenderProfile Created");
-        //        Console.WriteLine("SenderProfile ID: " + results[0].NewObjectID.ToString());
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("SenderProfile Created");
-        //        Console.WriteLine(results[0].StatusMessage);
-        //    }
-        //}
+        }
 
     }
 }
