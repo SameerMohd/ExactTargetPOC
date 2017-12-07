@@ -26,10 +26,6 @@ namespace DataExtractor
         public static IDeliveryProfileClient _deliveryProfileClient { get; set; }
         #endregion
 
-        //static void Main(string[] args)
-        //{
-
-        //}
 
 
         private static void SendUsingPreDefinedKeys(TriggeredSendDataModel TriggerData, List<SubscriberDataModel> Subscriberlist)
