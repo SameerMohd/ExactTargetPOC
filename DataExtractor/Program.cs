@@ -20,7 +20,7 @@ namespace DataExtractor
         {
             // TestWithPasteHtml("SamTest12012017");
             // createSenderProfile();
-            TestWithTemplate("SamTestTemplate12052017_21", true, true);
+            TestWithTemplate("SamTestTemplate12052017_21    ", true, true);
             Console.WriteLine("Done");
             Console.ReadKey();
         }
