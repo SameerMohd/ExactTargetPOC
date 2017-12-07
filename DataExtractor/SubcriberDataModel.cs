@@ -8,9 +8,11 @@ namespace DataExtractor
 {
     public class SubscriberDataModel
     {
-        public string SubcriberEmail { get; set; }
-        public int? SubscriberKey { get; set; }
+        public string SubscriberEmail { get; set; }
+        public string SubscriberKey { get; set; }
         public List<KeyValuePair<string, string>> ReplacementValues { get; set; }
+        public string FromEmail { get; set; }
+        public string FromName { get; set; }
     }
     public class TriggeredSendDataModel
     {
@@ -18,5 +20,7 @@ namespace DataExtractor
         public string EmailTemplateExternalKey { get; set; }
         public string DataExtensionExternalKey { get; set; }
         public string EmailExternalKey { get; set; }
+        public string FromEmail { get; set; }
+        public string FromName { get; set; }
     }
 }

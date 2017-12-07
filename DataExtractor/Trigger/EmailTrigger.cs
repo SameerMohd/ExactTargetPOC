@@ -36,7 +36,7 @@ namespace DataExtractor.Trigger
 
             var subscriber = new Subscriber
             {
-                Addresses = new SubscriberAddress[]{ new SubscriberAddress() { Address = "", AddressType = "" } },
+                Addresses = new SubscriberAddress[] { new SubscriberAddress() { Address = "", AddressType = "" } },
                 EmailAddress = exactTargetTriggeredEmail.EmailAddress,
                 SubscriberKey = exactTargetTriggeredEmail.SubscriberKey ?? exactTargetTriggeredEmail.EmailAddress,
                 Attributes =
@@ -72,6 +72,43 @@ namespace DataExtractor.Trigger
                 Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
                 TriggeredSendDefinition = tsd,
                 Subscribers = subscribers.ToArray()
+            };
+
+            var co = new CreateOptions
+            {
+                RequestType = requestQueueing == RequestQueueing.No ? RequestType.Synchronous : RequestType.Asynchronous,
+                RequestTypeSpecified = true,
+                QueuePriority = priority == Priority.High ? ETService.Priority.High : ETService.Priority.Medium,
+                QueuePrioritySpecified = true
+            };
+
+            string requestId, status;
+            var result = client.Create(
+                co,
+                new APIObject[] { ts },
+                out requestId, out status);
+
+            ExactTargetResultChecker.CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
+        }
+
+        public void TriggerCustom(TriggeredSendDataModel exactTargetTriggeredEmail, List<Subscriber> lst, RequestQueueing requestQueueing = RequestQueueing.No, Priority priority = Priority.Normal)
+        {
+            var clientId = _config.ClientId;
+            var client = SoapClientFactory.Manufacture(_config);
+
+            
+
+            var tsd = new TriggeredSendDefinition
+            {
+                Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
+                CustomerKey = exactTargetTriggeredEmail.TriggerSendDefinitionExternalKey,
+            };
+
+            var ts = new TriggeredSend
+            {
+                Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
+                TriggeredSendDefinition = tsd,
+                Subscribers = lst.ToArray()
             };
 
             var co = new CreateOptions
