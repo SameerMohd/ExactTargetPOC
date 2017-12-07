@@ -20,7 +20,7 @@ namespace DataExtractor
         {
             // TestWithPasteHtml("SamTest01122017");
            // createSenderProfile();
-            TestWithTemplate("SamTestTemplate05122017_5", true, true);
+            TestWithTemplate("SamTestTemplate05122017_19", true, true);
             Console.WriteLine("Done");
             Console.ReadKey();
         }
@@ -130,7 +130,7 @@ namespace DataExtractor
 
         private static void Send(string externalKey)
         {
-            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "sameer.mohammad@xx.com");
+            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "sameer.mohammad@pimco.com");
             triggeredEmail.FromAddress = "test@test.com";
             triggeredEmail.FromName = "Master Tester";
             triggeredEmail.AddReplacementValue("Subject", "SamTest CC and BCC")
@@ -150,42 +150,14 @@ namespace DataExtractor
             // Needs to get Loaded from Config File
             return new ExactTargetConfiguration
             {
-                EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//  Proper End Point Required From SMS
-                //ClientID = ???     //  ClientID is Optional.
+               
             };
         }
 
-        //public static void createSenderProfile()
-        //{
-        //    SimpleAES ObjAes = new SimpleAES();
-        //    SoapClient partnerApi = new SoapClient();
-        //    //Instantiate SenderProfile and set general properties
-        //    SenderProfile sp = new SenderProfile();
-        //    sp.FromAddress = "sameer.mohammad@pimco.com";
-        //    sp.FromName = "Sameer Mohammad";
-        //    sp.CustomerKey = "SamSender";
-        //    sp.Name = "SamSenderp";
-        //    sp.Description = "Used for overriding the RMM settings";
-        //    //optional - override the default RMM 
-        //    sp.UseDefaultRMMRules = false;
-        //    sp.UseDefaultRMMRulesSpecified = true;
+        public static void SendUsingPreDefinedKeys(TriggeredSendDataModel TriggerData, List<SubscriberDataModel> Subscriberlist)
+        {
 
-        //    //create the Sender Profile
-        //    string requestID = string.Empty;
-        //    string status = string.Empty;
-        //    CreateResult[] results = partnerApi.Create(null, new APIObject[] { sp }, out requestID, out status);
-        //    //parse the results for objectID or error
-        //    if (status.ToUpper() == "OK")
-        //    {
-        //        Console.WriteLine("SenderProfile Created");
-        //        Console.WriteLine("SenderProfile ID: " + results[0].NewObjectID.ToString());
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("SenderProfile Created");
-        //        Console.WriteLine(results[0].StatusMessage);
-        //    }
-        //}
+        }
 
     }
 }
