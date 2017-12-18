@@ -24,7 +24,7 @@ namespace DataExtractor.Core.RequestClients.TriggeredSendDefinition
             string dataExtensionCustomerKey,
             string deliveryProfileCustomerKey,
             string name,
-            string description, bool NeedCC = false, bool NeedBcc = false)
+            string description, bool NeedCC = false, bool NeedBcc = false, string CCmails = "", string BccEmails = "")
         {
             var ts = new ETService.TriggeredSendDefinition
             {
@@ -53,9 +53,9 @@ namespace DataExtractor.Core.RequestClients.TriggeredSendDefinition
             };
 
             if (NeedCC)
-                ts.CCEmail = "sam232b@gmail.com;kkmir09@gmail.com"; //"%%CCAddress%%"; //Multiple CCAddress
-            // if (NeedBcc)
-            //  ts.BccEmail = "kkmir09@gmail.com";// "%%BCCAddress%%";
+                ts.CCEmail = "%%CCAddress%%"; //Multiple CCAddress
+                                     // if (NeedBcc)
+           // ts.BccEmail = BccEmails;// "%%BCCAddress%%";
 
             string requestId, status;
             var result = _client.Create(new CreateOptions(), new APIObject[] { ts }, out requestId, out status);
@@ -85,6 +85,15 @@ namespace DataExtractor.Core.RequestClients.TriggeredSendDefinition
             var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
         }
+        public void UpdateTriggerSendDefinition(ETService.TriggeredSendDefinition tsd)
+        {
+            string requestId, overallStatus;
+            var result = _client.Update(new UpdateOptions(), new APIObject[] { tsd }, out requestId, out overallStatus);
+            ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
+        }
+
+
+
 
     }
 }

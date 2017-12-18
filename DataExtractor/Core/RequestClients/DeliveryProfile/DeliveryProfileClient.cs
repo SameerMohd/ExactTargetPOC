@@ -26,7 +26,7 @@ namespace DataExtractor.Core.RequestClients.DeliveryProfile
                         _config.ClientId.HasValue
                             ? new ClientID {ID = _config.ClientId.Value, IDSpecified = true}
                             : null,
-                    Name = "Blank delivery profile",
+                    Name = "BDP",
                     Description = "Blank delivery profile",
                     CustomerKey = externalKey,
                     FooterSalutationSource = SalutationSourceEnum.None,

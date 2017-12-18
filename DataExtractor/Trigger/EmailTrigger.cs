@@ -108,7 +108,7 @@ namespace DataExtractor.Trigger
             {
                 Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
                 TriggeredSendDefinition = tsd,
-                Subscribers = lst.ToArray()
+                Subscribers = lst.ToArray(),
             };
 
             var co = new CreateOptions

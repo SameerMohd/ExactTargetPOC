@@ -22,5 +22,10 @@ namespace DataExtractor
         public string EmailExternalKey { get; set; }
         public string FromEmail { get; set; }
         public string FromName { get; set; }
+
+        public bool isCcNeed { get; set; }
+        public string CcEmails { get; set; }
+        public bool isBccNeed { get; set; }
+        public string BccEmails { get; set; }
     }
 }

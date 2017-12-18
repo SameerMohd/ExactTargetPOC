@@ -9,15 +9,16 @@ using DataExtractor.ETService;
 using DataExtractor.Trigger;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataExtractor
 {
-    class SamProgram
+    public class SamProgram
     {
-        #region"constants                   "
+        #region"constants"
         public static ISharedCoreRequestClient _SharedClent { get; set; }
         public static ITriggeredSendDefinitionClient triggeredSendDefinitionClient { get; set; }
         public static IDataExtensionClient _dataExtensionClient { get; set; }
@@ -28,6 +29,46 @@ namespace DataExtractor
 
 
 
+        static void Main(string[] args)
+        {
+            TriggeredSendDataModel Mdl = new TriggeredSendDataModel()
+            {
+                DataExtensionExternalKey = "RIBEventTest",
+                FromEmail = "sameer.mohammad@pimco.com",
+                FromName = "Master Tester",
+                EmailExternalKey = "RIB_Events",              // email name, id, customer key.
+                                                              // EmailTemplateExternalKey = "RIB_Events",  //template name ,val
+                TriggerSendDefinitionExternalKey = "RIB_EventsNew",
+                // CcEmails = "Steven.Jackson@pimco.com",
+
+                isCcNeed = true,
+                isBccNeed = true
+
+            }; // 
+
+            List<SubscriberDataModel> Subscriberlist = new List<SubscriberDataModel>();
+            var rep = new List<KeyValuePair<string, string>>();
+            rep.Add(new KeyValuePair<string, string>("name", "Sameer"));
+            rep.Add(new KeyValuePair<string, string>("email_subject", "Test"));
+            rep.Add(new KeyValuePair<string, string>("event_markup", "test Mark up"));
+            rep.Add(new KeyValuePair<string, string>("date", DateTime.Now.ToString()));
+            rep.Add(new KeyValuePair<string, string>("First_Name", "Sameer"));
+            rep.Add(new KeyValuePair<string, string>("html_markup", "Test"));
+            rep.Add(new KeyValuePair<string, string>("view_email_url", "Test"));
+            rep.Add(new KeyValuePair<string, string>("insert date", "Test"));
+            rep.Add(new KeyValuePair<string, string>("manage_url", "Test"));
+            rep.Add(new KeyValuePair<string, string>("CCAddress", "sam232b@gmail.com"));
+            rep.Add(new KeyValuePair<string, string>("BCCAddress", "kkmir09@gmail.com"));
+
+
+            Subscriberlist.Add(new SubscriberDataModel() { SubscriberEmail = "sameer.mohammad@pimco.com", SubscriberKey = "sameer.mohammad@pimco.com", ReplacementValues = rep });
+
+
+            SendUsingPreDefinedKeys(Mdl, Subscriberlist);
+
+            Console.WriteLine("Done");
+            Console.ReadKey();
+        }
         private static void SendUsingPreDefinedKeys(TriggeredSendDataModel TriggerData, List<SubscriberDataModel> Subscriberlist)
         {
             var config = GetConfig();
@@ -82,14 +123,22 @@ namespace DataExtractor
 
         private static void StartTriggerSend(TriggeredSendDataModel TriggerData)
         {
-            var TS = _SharedClent.RetrieveObject<TriggeredSendDefinition>("CustomerKey", TriggerData.TriggerSendDefinitionExternalKey, "TriggeredSendDefinition");
-            if (TS != null)
+            try
             {
-                if (TS.TriggeredSendStatus != TriggeredSendStatusEnum.Active)
+                var TS = _SharedClent.RetrieveObject<TriggeredSendDefinition>("CustomerKey", TriggerData.TriggerSendDefinitionExternalKey, "TriggeredSendDefinition");
+                if (TS != null)
                 {
-                    triggeredSendDefinitionClient.StartTriggeredSend(TS.CustomerKey);
+                    if (TS.TriggeredSendStatus != TriggeredSendStatusEnum.Active)
+                    {
+                        triggeredSendDefinitionClient.StartTriggeredSend(TS.CustomerKey);
+                    }
                 }
             }
+            catch (Exception)
+            {
+
+            }
+
         }
 
         private static void GetClient(IExactTargetConfiguration config)
@@ -108,7 +157,10 @@ namespace DataExtractor
             // Needs to get Loaded from Config File
             return new ExactTargetConfiguration
             {
-
+                ApiUserName = "webtech@pimco.com",   // Generic ApiUserName
+                ApiPassword = ObjAes.DecryptString("133171215054227028068033180158000111090232083231"),
+                EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//  Proper End Point Required From SMS
+                ClientId = 6191809
             };
         }
 
@@ -116,17 +168,64 @@ namespace DataExtractor
         {
             if (TriggerData != null)
             {
-                var isEmailTemplateExternalKey = _SharedClent.DoesObjectExist("CustomerKey", TriggerData.EmailTemplateExternalKey, "Template");
+                //  var isEmailTemplateExternalKey = _SharedClent.DoesObjectExist("CustomerKey", TriggerData.EmailTemplateExternalKey, "Template");
                 var isDataExtension = _SharedClent.DoesObjectExist("CustomerKey", TriggerData.DataExtensionExternalKey, "DataExtension");
                 var isTriggeredSendDefinition = _SharedClent.DoesObjectExist("CustomerKey", TriggerData.TriggerSendDefinitionExternalKey, "TriggeredSendDefinition");
-                var isEmail = _SharedClent.DoesObjectExist("CustomerKey", TriggerData.EmailExternalKey, "Email");
+                var isEmail = _SharedClent.DoesObjectExist("Name", TriggerData.EmailExternalKey, "Email");
+                string EmailID;
+                int ID = 0;
 
-                if (isEmailTemplateExternalKey && isDataExtension && isTriggeredSendDefinition && isEmail)
+                if (isEmail)
                 {
+                    EmailID = _SharedClent.RetrieveObjectId("Name", TriggerData.EmailExternalKey, "Email");
+                    ID = Convert.ToInt32(EmailID);
+                }
+
+                if (!isEmail || !isDataExtension)
+                    return false;
+
+                if (!isTriggeredSendDefinition)
+                {
+                    var dpkey = ConfigurationManager.AppSettings["DP"].ToString();
+                    _deliveryProfileClient.TryCreateBlankDeliveryProfile(dpkey);
+
+                    triggeredSendDefinitionClient.CreateTriggeredSendDefinition(
+                        TriggerData.TriggerSendDefinitionExternalKey,
+                        ID,
+                        TriggerData.DataExtensionExternalKey,
+                        dpkey,
+                        TriggerData.TriggerSendDefinitionExternalKey,
+                        "",
+                        TriggerData.isCcNeed,
+                        TriggerData.isBccNeed,
+                        TriggerData.CcEmails,
+                        TriggerData.BccEmails
+                        );
                     return true;
                 }
+                return true;
+
             }
             return false;
         }
+
+        //public APIObject[] TSSummary()
+        //{
+        //    RetrieveRequest rr = new RetrieveRequest();
+        //    rr.ObjectType = "TriggeredSendSummary";
+        //    rr.Properties = new String[] { "Sent", "Bounces", "Opens", "Clicks" };
+        //    TriggeredSendSummary tss = new TriggeredSendSummary();
+        //    SimpleFilterPart sfp = new SimpleFilterPart();
+
+        //    sfp.SimpleOperator = SimpleOperators.equals;
+        //    sfp.Property = "CustomerKey";
+        //    sfp.Value = new string[] { "Weekly_Newsletter_-_2009_07_16" };
+        //    rr.Filter = sfp;
+        //    string requestID;
+
+        //    APIObject[] results;
+        //    string status = client.Retrieve(rr, out requestID, out results);
+        //    return results;
+        //}
     }
 }

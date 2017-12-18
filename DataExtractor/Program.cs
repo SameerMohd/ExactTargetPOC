@@ -16,14 +16,15 @@ namespace DataExtractor
     class Program
     {
 
-        static void Main(string[] args)
-        {
-            // TestWithPasteHtml("SamTest12012017");
-            // createSenderProfile();
-            TestWithTemplate("SamTestTemplate12052017_21", true, true);
-            Console.WriteLine("Done");
-            Console.ReadKey();
-        }
+        //static void Main(string[] args)
+        //{
+        //    // TestWithPasteHtml("SamTest12012017");
+        //    // createSenderProfile();
+        //    //  TestWithTemplate("SamTestTemplate12052017_21", true, true);
+            
+        //    Console.WriteLine("Done");
+        //    Console.ReadKey();
+        //}
         public static void MoveFileToDest()
         {
             string SourcePath = ConfigurationManager.AppSettings["JsonSource"].ToString();
